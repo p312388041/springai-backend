@@ -1,0 +1,134 @@
+package com.chongge.chatbot.controller;
+
+import com.chongge.chatbot.dto.ApiResponse;
+import com.chongge.chatbot.dto.ChatRequest;
+import com.chongge.chatbot.dto.ChatResponse;
+import com.chongge.chatbot.entity.ChatMessage;
+import com.chongge.chatbot.service.ChatService;
+import com.chongge.chatbot.util.ApiResponseUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+/**
+ * 聊天控制器
+ * 提供AI聊天相关的REST API接口
+ */
+@RestController
+@RequestMapping("/api/chat")
+public class ChatController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
+
+    private final ChatService chatService;
+
+    /**
+     * 构造函数注入ChatService
+     */
+    public ChatController(ChatService chatService) {
+        this.chatService = chatService;
+    }
+
+    /**
+     * 发送消息给AI
+     *
+     * @param request 包含消息内容和可选的会话ID的请求对象
+     * @return 包含AI回复的响应对象
+     */
+    @PostMapping("/send")
+    public ResponseEntity<ApiResponse<ChatResponse>> sendMessage(@RequestBody ChatRequest request, @RequestParam(required = false) String sessionId) {
+        logger.info("Received chat request: {}", request);
+
+        // 验证请求
+        if (request.getMessage() == null || request.getMessage().trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponseUtil.error(400, "消息内容不能为空"));
+        }
+
+        try {
+            ChatResponse response = chatService.chat(request.getMessage(),sessionId);
+            logger.info("Chat response: {}", response);
+            return ResponseEntity.ok(ApiResponseUtil.success(response, "消息处理成功"));
+
+        } catch (Exception e) {
+            logger.error("Error processing chat request", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponseUtil.error(500, "处理失败：" + e.getMessage()));
+        }
+    }
+
+    /**
+     * 获取指定会话的聊天历史
+     *
+     * @param sessionId 会话ID
+     * @return 该会话的所有聊天消息
+     */
+    @GetMapping("/history/{sessionId}")
+    public ResponseEntity<ApiResponse<List<ChatMessage>>> getChatHistory(@PathVariable String sessionId) {
+        logger.info("Fetching chat history for session: {}", sessionId);
+
+        try {
+            List<ChatMessage> history = chatService.getChatHistory(sessionId);
+            return ResponseEntity.ok(ApiResponseUtil.success(history, "获取成功"));
+
+        } catch (Exception e) {
+            logger.error("Error fetching chat history", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponseUtil.error(500, "获取失败：" + e.getMessage()));
+        }
+    }
+
+    /**
+     * 清除指定会话的聊天记录
+     *
+     * @param sessionId 会话ID
+     * @return 操作结果
+     */
+    @DeleteMapping("/history/{sessionId}")
+    public ResponseEntity<ApiResponse<Void>> clearChatHistory(@PathVariable String sessionId) {
+        logger.info("Clearing chat history for session: {}", sessionId);
+
+        try {
+            chatService.clearChatHistory(sessionId);
+            return ResponseEntity.ok(ApiResponseUtil.success(null, "清除成功"));
+
+        } catch (Exception e) {
+            logger.error("Error clearing chat history", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponseUtil.error(500, "清除失败：" + e.getMessage()));
+        }
+    }
+
+    /**
+     * 获取所有聊天消息（管理接口）
+     *
+     * @return 所有聊天消息列表
+     */
+    @GetMapping("/messages")
+    public ResponseEntity<ApiResponse<List<ChatMessage>>> getAllMessages() {
+        logger.info("Fetching all messages");
+
+        try {
+            List<ChatMessage> messages = chatService.getAllMessages();
+            return ResponseEntity.ok(ApiResponseUtil.success(messages, "获取成功"));
+
+        } catch (Exception e) {
+            logger.error("Error fetching all messages", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponseUtil.error(500, "获取失败：" + e.getMessage()));
+        }
+    }
+
+    /**
+     * 健康检查端点
+     *
+     * @return 服务健康状态
+     */
+    @GetMapping("/health")
+    public ResponseEntity<ApiResponse<String>> health() {
+        return ResponseEntity.ok(ApiResponseUtil.success("OK", "服务运行中"));
+    }
+}
