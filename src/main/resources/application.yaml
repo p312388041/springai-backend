@@ -3,44 +3,44 @@ spring:
   application:
     name: ChatBot
     version: 1.0.0
-  
+
   # JPA/Hibernate 数据库配置
   jpa:
     # 使用 H2 数据库（开发/测试环境）
     hibernate:
-      ddl-auto: update  # 自动创建/更新表结构
+      ddl-auto: update # 自动创建/更新表结构
     show-sql: false
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
-  
+
   # 数据源配置
   datasource:
     # H2 内存数据库（开发环境）
     # url: jdbc:h2:mem:chatbot
     # driver-class-name: org.h2.Driver
     # username: sa
-    # password: 
-    
+    # password:
+
     # MySQL 配置（生产环境，需要取消注释）
     # url: jdbc:mysql://localhost:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     # driver-class-name: com.mysql.cj.jdbc.Driver
     # username: root
     # password: your_password
-    
+
     # PostgreSQL 配置（生产环境，需要取消注释）
     url: jdbc:postgresql://localhost:5432/springaidb
     driver-class-name: org.postgresql.Driver
     username: springai
     password: secret
-  
+
   # H2 数据库控制台（仅开发环境）
   h2:
     console:
       enabled: true
       path: /h2-console
-  
+
   # AI 模型配置
   ai:
     # Ollama 本地模型配置
@@ -54,9 +54,27 @@ spring:
       memory:
         repository:
           jdbc:
-            initialize-schema: always  # 使用字符串 "always"
+            initialize-schema: always # 使用字符串 "always"
             schema-name: public
             table-name: spring_ai_chat_memory
+
+    # mcp:
+    #   client:
+    #     enabled: true
+    #     type: SYNC
+    #     sse:
+    #       connections:
+    #         weather-mcp:
+    #           url: http://localhost:3001
+
+    vectorstore:
+      pgvector:
+        initialize-schema: true # ⭐ 关键配置：自动建表
+        table-name: vector_store # 可选：自定义表名
+        schema-name: public # 可选：自定义schema
+        dimensions: 1024 # 根据你的嵌入模型设置
+        index-type: HNSW # 自动创建索引
+
     # OpenAI 配置（可选）
     # openai:
     #   api-key: your-api-key
@@ -82,12 +100,33 @@ logging:
   level:
     root: INFO
     com.chongge.chatbot: INFO
-    org.springframework.web: INFO
-    org.springframework.boot.web: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.ai.autoconfigure: DEBUG
-    org.springframework.boot.autoconfigure: DEBUG
+
+    # Spring AI 核心日志
+    org.springframework.ai: DEBUG
+    org.springframework.ai.chat: DEBUG
+
+    # Prompt 相关
+    org.springframework.ai.chat.prompt: DEBUG
+    org.springframework.ai.chat.messages: DEBUG
+    org.springframework.ai.chat.model: DEBUG
+
+    # Ollama 客户端日志（您用的是这个！）
+    org.springframework.ai.ollama: DEBUG
+    org.springframework.ai.ollama.api: DEBUG
+    org.springframework.ai.ollama.client: DEBUG
+
+    # MCP 相关
+    org.springframework.ai.mcp: DEBUG
+    org.springframework.ai.mcp.client: DEBUG
+    org.springframework.ai.tool: DEBUG
+
+    # HTTP 客户端日志（看实际请求）
+    org.springframework.web.client.RestTemplate: DEBUG
+    org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG
+
+    # 移除 OpenAI 相关的配置，因为您没用 OpenAI
+    # org.springframework.ai.openai.api: DEBUG  (去掉)
+    # org.springframework.ai.openai.OpenAiChatClient: DEBUG (去掉)
 
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
@@ -96,7 +135,10 @@ logging:
     name: logs/application.log
     max-size: 10MB
     max-history: 10
-
+  charset:
+    console: UTF-8
+    file: UTF-8
+    
 # Actuator 端点配置
 management:
   endpoints:
