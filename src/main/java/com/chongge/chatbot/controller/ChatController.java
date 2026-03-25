@@ -2,17 +2,15 @@ package com.chongge.chatbot.controller;
 
 import com.chongge.chatbot.dto.ApiResponse;
 import com.chongge.chatbot.dto.ChatRequest;
-import com.chongge.chatbot.service.ChatService;
+import com.chongge.chatbot.service.RagChatService;
 import com.chongge.chatbot.util.ApiResponseUtil;
-
-import reactor.core.publisher.Flux;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 /**
  * 聊天控制器
@@ -21,15 +19,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/chat")
 public class ChatController {
-   
+
     private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
-    private final ChatService chatService;
+    private final RagChatService ragChatService;
 
     /**
      * 构造函数注入ChatService
      */
-    public ChatController(ChatService chatService) {
-        this.chatService = chatService;
+    public ChatController(RagChatService chatService) {
+        this.ragChatService = chatService;
     }
 
     /**
@@ -40,8 +38,10 @@ public class ChatController {
      */
     @PostMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamMessage(@RequestBody ChatRequest request, @Param("sessionId") String sessionId) {
-        return chatService.chat(request.getMessage(), sessionId);
+        System.out.println(Thread.currentThread().threadId() + "---".repeat(10));
+        return ragChatService.chat(request.getMessage(), sessionId);
     }
+
     // /**
     // * 获取指定会话的聊天历史
     // *

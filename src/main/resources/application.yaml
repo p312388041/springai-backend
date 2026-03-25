@@ -1,150 +1,173 @@
 # Spring Boot 应用配置
 spring:
-  application:
-    name: ChatBot
-    version: 1.0.0
+    application:
+        name: ChatBot
+        version: 1.0.0
 
-  # JPA/Hibernate 数据库配置
-  jpa:
-    # 使用 H2 数据库（开发/测试环境）
-    hibernate:
-      ddl-auto: update # 自动创建/更新表结构
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
-        use_sql_comments: true
+    # JPA/Hibernate 数据库配置
+    jpa:
+        # 使用 H2 数据库（开发/测试环境）
+        hibernate:
+            ddl-auto: update # 自动创建/更新表结构
+        show-sql: false
+        properties:
+            hibernate:
+                format_sql: true
+                use_sql_comments: true
 
-  # 数据源配置
-  datasource:
-    # H2 内存数据库（开发环境）
-    # url: jdbc:h2:mem:chatbot
-    # driver-class-name: org.h2.Driver
-    # username: sa
-    # password:
+    # 数据源配置
+    datasource:
+        # H2 内存数据库（开发环境）
+        # url: jdbc:h2:mem:chatbot
+        # driver-class-name: org.h2.Driver
+        # username: sa
+        # password:
 
-    # MySQL 配置（生产环境，需要取消注释）
-    # url: jdbc:mysql://localhost:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    # driver-class-name: com.mysql.cj.jdbc.Driver
-    # username: root
-    # password: your_password
+        # MySQL 配置（生产环境，需要取消注释）
+        # url: jdbc:mysql://localhost:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        # driver-class-name: com.mysql.cj.jdbc.Driver
+        # username: root
+        # password: your_password
 
-    # PostgreSQL 配置（生产环境，需要取消注释）
-    url: jdbc:postgresql://localhost:5432/springaidb
-    driver-class-name: org.postgresql.Driver
-    username: springai
-    password: secret
+        # PostgreSQL 配置（生产环境，需要取消注释）
+        # url: jdbc:postgresql://localhost:5432/springaidb
+        url: jdbc:postgresql://localhost:5432/futures
+        driver-class-name: org.postgresql.Driver
+        username: springai
+        password: secret
 
-  # H2 数据库控制台（仅开发环境）
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+    # H2 数据库控制台（仅开发环境）
+    h2:
+        console:
+            enabled: true
+            path: /h2-console
 
-  # AI 模型配置
-  ai:
-    # Ollama 本地模型配置
-    ollama:
-      base-url: http://localhost:11434
-      chat:
-        options:
-          model: llama3.1:latest
-    # 聊天记忆存储配置（修正后的路径）
-    chat:
-      memory:
-        repository:
-          jdbc:
-            initialize-schema: always # 使用字符串 "always"
-            schema-name: public
-            table-name: spring_ai_chat_memory
+    # AI 模型配置
+    ai:
+        # model:
+        #     chat: openai # 或 ollama，明确指定当前激活的模型
+        # Ollama 本地模型配置
+        ollama:
+            base-url: http://localhost:11434
+            chat:
+                options:
+                    model: llama3.1:latest
+            embedding:
+                options:
+                    model: mxbai-embed-large:latest # 👈 必须明确指定
+        # 聊天记忆存储配置（修正后的路径）
+        chat:
+            memory:
+                repository:
+                    jdbc:
+                        initialize-schema: always # 使用字符串 "always"
+                        schema-name: public
+                        table-name: spring_ai_chat_memory
 
-    # mcp:
-    #   client:
-    #     enabled: true
-    #     type: SYNC
-    #     sse:
-    #       connections:
-    #         weather-mcp:
-    #           url: http://localhost:3001
+        # openai:
+        #     api-key: test # 使用环境变量，或直接写字符串
+        #     base-url: http://localhost:8021
+        #     audio:
+        #         transcription:
+        #             options:
+        #                 model: whisper-base
+        #         speech:
+        #             options:
+        #                 model: tts-1
+        # mcp:
+        #   client:
+        #     enabled: true
+        #     type: SYNC
+        #     sse:
+        #       connections:
+        #         weather-mcp:
+        #           url: http://localhost:3001
 
-    vectorstore:
-      pgvector:
-        initialize-schema: true # ⭐ 关键配置：自动建表
-        table-name: vector_store # 可选：自定义表名
-        schema-name: public # 可选：自定义schema
-        dimensions: 1024 # 根据你的嵌入模型设置
-        index-type: HNSW # 自动创建索引
+        vectorstore:
+            pgvector:
+                initialize-schema: true # ⭐ 关键配置：自动建表
+                table-name: vector_store # 可选：自定义表名
+                schema-name: public # 可选：自定义schema
+                index-type: HNSW # 自动创建索引
+                # dimensions: 1024 # 根据你的嵌入模型设置
 
-    # OpenAI 配置（可选）
-    # openai:
-    #   api-key: your-api-key
-    #   chat:
-    #     options:
-    #       model: gpt-3.5-turbo
+        # OpenAI 配置（可选）
+        # openai:
+        #   api-key: your-api-key
+        #   chat:
+        #     options:
+        #       model: gpt-3.5-turbo
 
 # 服务器配置
 server:
-  port: 8080
-  servlet:
-    context-path: /
-  error:
-    include-message: always
-    include-binding-errors: always
-    include-stacktrace: on_param
-  compression:
-    enabled: true
-    min-response-size: 1024
+    port: 8080
+    servlet:
+        context-path: /
+    error:
+        include-message: always
+        include-binding-errors: always
+        include-stacktrace: on_param
+    compression:
+        enabled: true
+        min-response-size: 1024
 
 # 日志配置
 logging:
-  level:
-    root: INFO
-    com.chongge.chatbot: INFO
+    level:
+        root: INFO
+        com.chongge.chatbot: INFO
 
-    # Spring AI 核心日志
-    org.springframework.ai: DEBUG
-    org.springframework.ai.chat: DEBUG
+        # Spring AI 核心日志
+        # org.springframework.ai: DEBUG
+        # org.springframework.ai.chat: DEBUG
 
-    # Prompt 相关
-    org.springframework.ai.chat.prompt: DEBUG
-    org.springframework.ai.chat.messages: DEBUG
-    org.springframework.ai.chat.model: DEBUG
+        # Prompt 相关
+        # org.springframework.ai.chat.prompt: DEBUG
+        # org.springframework.ai.chat.messages: DEBUG
+        # org.springframework.ai.chat.model: DEBUG
 
-    # Ollama 客户端日志（您用的是这个！）
-    org.springframework.ai.ollama: DEBUG
-    org.springframework.ai.ollama.api: DEBUG
-    org.springframework.ai.ollama.client: DEBUG
+        # Ollama 客户端日志（您用的是这个！）
+        # org.springframework.ai.ollama: DEBUG
+        # org.springframework.ai.ollama.api: DEBUG
+        # org.springframework.ai.ollama.client: DEBUG
 
-    # MCP 相关
-    org.springframework.ai.mcp: DEBUG
-    org.springframework.ai.mcp.client: DEBUG
-    org.springframework.ai.tool: DEBUG
+        # MCP 相关
+        # org.springframework.ai.mcp: DEBUG
+        # org.springframework.ai.mcp.client: DEBUG
+        # org.springframework.ai.tool: DEBUG
 
-    # HTTP 客户端日志（看实际请求）
-    org.springframework.web.client.RestTemplate: DEBUG
-    org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG
+        # HTTP 客户端日志（看实际请求）
+        # org.springframework.web.client.RestTemplate: DEBUG
+        # org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG
 
-    # 移除 OpenAI 相关的配置，因为您没用 OpenAI
-    # org.springframework.ai.openai.api: DEBUG  (去掉)
-    # org.springframework.ai.openai.OpenAiChatClient: DEBUG (去掉)
+        # 移除 OpenAI 相关的配置，因为您没用 OpenAI
+        # org.springframework.ai.openai.api: DEBUG  (去掉)
+        # org.springframework.ai.openai.OpenAiChatClient: DEBUG (去掉)
 
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-  file:
-    name: logs/application.log
-    max-size: 10MB
-    max-history: 10
-  charset:
-    console: UTF-8
-    file: UTF-8
-    
+    pattern:
+        console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+        file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file:
+        name: logs/application.log
+        max-size: 10MB
+        max-history: 10
+    charset:
+        console: UTF-8
+        file: UTF-8
+
 # Actuator 端点配置
 management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: always
+    endpoints:
+        web:
+            exposure:
+                include: health,info,metrics
+    endpoint:
+        health:
+            show-details: always
+
+    metrics:
+        export:
+            prometheus:
+                enabled: true
+    tracing:
+        enabled: true # 启用链路追踪
