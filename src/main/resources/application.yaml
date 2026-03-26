@@ -114,6 +114,9 @@ server:
 # 日志配置
 logging:
     level:
+        # 彻底关闭 PDFBox
+        org.apache.pdfbox: OFF
+        org.apache.tika: ERROR
         root: INFO
         com.chongge.chatbot: INFO
 
@@ -145,8 +148,8 @@ logging:
         # org.springframework.ai.openai.OpenAiChatClient: DEBUG (去掉)
 
     pattern:
-        console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-        file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+        console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n"
+        file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n"
     file:
         name: logs/application.log
         max-size: 10MB

@@ -27,8 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
         logger.error("An error occurred: ", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(500, "服务器内部错误：" + e.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(500, "服务器内部错误：" + e.getMessage()));
     }
 
     /**
@@ -40,8 +39,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNotFound(NoHandlerFoundException e) {
         logger.warn("Resource not found: {}", e.getRequestURL());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error(404, "请求的资源不存在"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(404, "请求的资源不存在"));
     }
 
     /**
@@ -53,8 +51,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<Void>> handleRuntimeException(RuntimeException e) {
         logger.error("Runtime error occurred: ", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(500, e.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(500, e.getMessage()));
     }
 
     /**
@@ -66,7 +63,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException e) {
         logger.warn("Illegal argument: ", e);
-        return ResponseEntity.badRequest()
-                .body(ApiResponse.error(400, "非法的参数：" + e.getMessage()));
+        return ResponseEntity.badRequest().body(ApiResponse.error(400, "非法的参数：" + e.getMessage()));
     }
 }
