@@ -4,8 +4,8 @@ import com.chongge.chatbot.dto.ApiResponse;
 import com.chongge.chatbot.dto.ChatRequest;
 import com.chongge.chatbot.service.RagChatService;
 import com.chongge.chatbot.util.ApiResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import reactor.core.publisher.Flux;
 @RequestMapping("/api/chat")
 public class ChatController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
+    // private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
     private final RagChatService ragChatService;
 
     /**

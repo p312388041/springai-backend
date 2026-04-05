@@ -1,18 +1,12 @@
 package com.chongge.chatbot.service;
 
 import java.net.MalformedURLException;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.document.DocumentTransformer;
-// import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,7 +29,7 @@ public class DocumentIngestionService {
      */
     public void loadPdfAndStore(String filePath) throws MalformedURLException {
         // 1. 创建 Resource 对象
-        Resource resource = new UrlResource(Path.of(filePath).toUri());
+        // Resource resource = new UrlResource(Path.of(filePath).toUri());
 
         // 2. 配置 PDF 读取器（每页作为一个 Document）
         // TikaDocumentReader pdfReader = new TikaDocumentReader(resource);

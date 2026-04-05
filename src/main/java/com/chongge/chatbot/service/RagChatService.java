@@ -3,17 +3,12 @@ package com.chongge.chatbot.service;
 import com.chongge.chatbot.repository.ChatMessageRepository;
 import io.modelcontextprotocol.client.McpSyncClient;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.messages.AssistantMessage;
-import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import reactor.core.publisher.Flux;
 
 /**

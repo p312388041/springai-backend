@@ -1,31 +1,17 @@
 package com.chongge.chatbot.service;
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.transformer.splitter.TokenTextSplitter;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
  * 单元测试类：DocumentIngestionService
- */ 
+ */
 @SpringBootTest
 class DocumentIngestionServiceTest {
- 
+
     @Autowired
     private DocumentIngestionService documentIngestionService;
 
@@ -37,7 +23,6 @@ class DocumentIngestionServiceTest {
         //     var vectorStoreField = DocumentIngestionService.class.getDeclaredField("vectorStore");
         //     vectorStoreField.setAccessible(true);
         //     vectorStoreField.set(documentIngestionService, vectorStore);
-            
         //     var textSplitterField = DocumentIngestionService.class.getDeclaredField("textSplitter");
         //     textSplitterField.setAccessible(true);
         //     textSplitterField.set(documentIngestionService, textSplitter);
@@ -50,7 +35,7 @@ class DocumentIngestionServiceTest {
     void testLoadPdfAndStore_success() throws MalformedURLException {
         // Arrange
         String filePath = "C:\\aa.pdf";
-        
+
         documentIngestionService.loadPdfAndStore(filePath);
         System.out.println("PDF加载测试跳过，需要实际PDF文件");
     }
@@ -60,13 +45,7 @@ class DocumentIngestionServiceTest {
         // Arrange
         String text = "这是一段测试文本内容，用于验证向量存储功能。";
         String source = "test-source";
-        
-        Document mockDocument = new Document(text, Map.of("source", source));
-        List<Document> mockSplitDocuments = Arrays.asList(
-            new Document("第一部分", Map.of("source", source)),
-            new Document("第二部分", Map.of("source", source))
-        );
-        
+
         // when(textSplitter.apply(anyList())).thenReturn(mockSplitDocuments);
 
         // Act
@@ -82,10 +61,10 @@ class DocumentIngestionServiceTest {
         // Arrange
         String text = "";
         String source = "empty-source";
-        
-        Document mockDocument = new Document(text, Map.of("source", source));
-        List<Document> mockSplitDocuments = Arrays.asList(mockDocument);
-        
+
+        // Document mockDocument = new Document(text, Map.of("source", source));
+        // List<Document> mockSplitDocuments = Arrays.asList(mockDocument);
+
         // when(textSplitter.apply(anyList())).thenReturn(mockSplitDocuments);
 
         // Act
@@ -103,8 +82,8 @@ class DocumentIngestionServiceTest {
         for (int i = 0; i < 3; i++) {
             longText.append("这是一个很长的测试文本段落，用于测试文本分割功能。");
         }
-        String source = "long-text-source"; 
+        String source = "long-text-source";
         // Act
-        documentIngestionService.storePlainText(longText.toString(), source); 
+        documentIngestionService.storePlainText(longText.toString(), source);
     }
 }

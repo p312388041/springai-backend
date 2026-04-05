@@ -1,13 +1,15 @@
 package com.chongge.chatbot;
 
 import java.io.IOException;
-import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
-import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository;
+
+// import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
+// import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository;
+
 // import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;
 // import org.springframework.ai.openai.api.OpenAiAudioApi;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.web.client.RestClient;
+// import org.springframework.core.io.FileSystemResource;
+// import org.springframework.http.client.SimpleClientHttpRequestFactory;
+// import org.springframework.web.client.RestClient;
 
 public class AudioToText {
 
